@@ -145,12 +145,27 @@ weapons `praetor-scripts` already covers before duplicating):
 **Non-combat**:
 - [ ] Healing — not covered upstream; needs the skill's command set and
   server response strings
-- [x] Locksmithing customer service — `serve_customers.lua`: waits for
-  customer arrivals and runs jobs via `require('lock_job')` (reuses its
-  reaction table directly rather than copying it), overriding only arrival
-  handling (greet immediately when idle) and the queue-empty hand-off
-  (wait, instead of lock_job's own `set_mode('board')` into board's
-  skill-training rotation).
+- [x] Locksmithing customer service — `serve_customers.lua`: a thin waiter
+  that hands each arriving customer straight to `lock_job` via
+  `set_mode('lock_job', {name, 'after:serve_customers'})` — the same
+  hand-off `board.lua` does, minus its skill-training rotation. No job
+  logic is copied or shadowed; `lock_job` remains the only place it lives.
+
+  **Depends on an upstream patch to `lock_job.lua`** (in `praetor-scripts`,
+  not this repo): as of this writing it has no `after:<mode>` support, so
+  it always exits to `set_mode('board')` once its queue empties. The patch
+  is small, additive, and backward-compatible (falls back to `board` when
+  no `after:` is passed, so existing callers are unaffected):
+
+  1. Add `local after = require('lib_after')` alongside its other requires.
+  2. Add `M.chains = true` under `M.desc`.
+  3. Add `args = after.parse(args)` as the first line of `on_start`.
+  4. In the `'You offer'` reaction's empty-queue branch, replace
+     `set_mode('board')` with `after.finish('board')`.
+
+  Without that patch applied to your local `praetor-scripts` checkout,
+  `serve_customers` still works, but once the job queue empties you land in
+  `board`'s training rotation instead of back in `serve_customers`.
 
 ## Testing
 

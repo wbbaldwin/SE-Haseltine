@@ -55,9 +55,11 @@ build status of each skillset.
 
 ## Status
 
-- `serve_customers.lua` — waits for locksmithing customers and services
-  their jobs (craft/unlock/lock/install), without `board`'s skill-training
-  rotation. `/mode serve_customers`
+- `serve_customers.lua` — waits for locksmithing customers and hands each
+  one to `lock_job`, without `board`'s skill-training rotation.
+  `/mode serve_customers`. Needs a small upstream patch to your local
+  `lock_job.lua` to fully avoid falling into `board` once idle — see
+  CLAUDE.md for the exact patch.
 
 See CLAUDE.md for what's still planned per skillset.
 
