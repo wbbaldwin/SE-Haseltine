@@ -145,9 +145,10 @@ weapons `praetor-scripts` already covers before duplicating):
 **Non-combat**:
 - [ ] Healing — not covered upstream; needs the skill's command set and
   server response strings
-- [ ] Locksmithing — `praetor-scripts` already has `board` / `lock_job` /
-  `wire_to_picks` / `locksmith`; only add something here if it's a genuine
-  gap or a character-specific variant
+- [x] Locksmithing customer service — `serve_customers.lua`: waits for
+  customer arrivals and runs `lock_job`'s job logic without `board`'s
+  skill-training rotation, since board's own queue-check only ever runs on
+  the unbusy lines its training rotation generates.
 
 ## Testing
 

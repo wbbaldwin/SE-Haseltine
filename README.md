@@ -55,8 +55,11 @@ build status of each skillset.
 
 ## Status
 
-Nothing is implemented yet — this repo is scaffolding for the automation
-project described above. See CLAUDE.md for what's planned per skillset.
+- `serve_customers.lua` — waits for locksmithing customers and services
+  their jobs (craft/unlock/lock/install), without `board`'s skill-training
+  rotation. `/mode serve_customers`
+
+See CLAUDE.md for what's still planned per skillset.
 
 ## Reference
 
