@@ -167,6 +167,31 @@ weapons `praetor-scripts` already covers before duplicating):
   `serve_customers` still works, but once the job queue empties you land in
   `board`'s training rotation instead of back in `serve_customers`.
 
+- [x] Locksmithing stats — `lib_stats.lua` persists lifetime totals (jobs
+  completed, by job type, by customer type, active job time, earnings,
+  expenses) across mode switches *and* app restarts; `state.persist` is used
+  instead of `metrics.*` specifically because `metrics.*` resets every mode
+  change, and this loop changes mode on every job. `locksmith_stats.lua` is
+  a read-only report mode: `/mode locksmith_stats` logs+notifies the
+  totals, including net gold/hour, then disables itself.
+
+  **Needs two more hooks in your local `lock_job.lua`** to actually
+  populate job counts and (once we have the exact server text) earnings:
+
+  1. `local stats = require('lib_stats')` alongside its other requires.
+  2. `stats.job_started()` right after each customer is selected to greet
+     — once in `on_start`, and once in the `'You offer'` reaction's
+     next-customer branch (same place the greeting is sent from).
+  3. `stats.job_finished(state.get('job_type'), state.get('customer'))` at
+     the very top of the `'You offer'` reaction, *before* job state is
+     reset for the next customer (both fields still hold the
+     just-completed job's values at that point, including on the
+     empty-queue exit branch).
+
+  `stats.record_earning(amount)` / `stats.record_expense(amount)` are
+  written but not yet wired to anything — need the exact server text for
+  getting paid and for the wire-purchase cost before adding those hooks.
+
 ## Testing
 
 Praetor has no script test harness — validate by running the mode in-game

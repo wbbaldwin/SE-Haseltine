@@ -60,6 +60,11 @@ build status of each skillset.
   `/mode serve_customers`. Needs a small upstream patch to your local
   `lock_job.lua` to fully avoid falling into `board` once idle — see
   CLAUDE.md for the exact patch.
+- `lib_stats.lua` / `locksmith_stats.lua` — lifetime job/earnings stats
+  (persisted across restarts, not per-session). `/mode locksmith_stats` to
+  see totals and net gold/hour. Job counts need two more hook calls added
+  to your local `lock_job.lua`; earnings tracking is still waiting on the
+  exact payment/wire-cost server text — see CLAUDE.md.
 
 See CLAUDE.md for what's still planned per skillset.
 
