@@ -146,9 +146,11 @@ weapons `praetor-scripts` already covers before duplicating):
 - [ ] Healing — not covered upstream; needs the skill's command set and
   server response strings
 - [x] Locksmithing customer service — `serve_customers.lua`: waits for
-  customer arrivals and runs `lock_job`'s job logic without `board`'s
-  skill-training rotation, since board's own queue-check only ever runs on
-  the unbusy lines its training rotation generates.
+  customer arrivals and runs jobs via `require('lock_job')` (reuses its
+  reaction table directly rather than copying it), overriding only arrival
+  handling (greet immediately when idle) and the queue-empty hand-off
+  (wait, instead of lock_job's own `set_mode('board')` into board's
+  skill-training rotation).
 
 ## Testing
 
